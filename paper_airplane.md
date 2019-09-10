@@ -1,0 +1,15 @@
+# These are instructions to fold a paper airplane out of a standard piece of printer paper.
+
+Step 1: place the sheet of paper on a flat surface, with the long edge of the paper facing you.
+Step 2: Fold the piece of paper in half by holding the two corners of paper closest to you, lifting them up, and matching them to the two corners furthest from you. Align the long edges of the paper so that they are in line with one another. With one hand hold the edges together, and with the other hand gently presh on the restof the paper to make a clean and even fold.
+Step 3: Open the paper back up, with the new crease facing downwards, pointing at the surface, like a river channel.
+Step 4: Turn the paper so that a short edge is now closest to you.
+Step 5: Take hold of the paper's corner that is furthest from you on the right side and bring the corner to meet the center fold line made a few steps ago. Line it up so that the top edge of the paper so that the top edge is now in line with the center fold. When pulling paper corner over, it should not pass over the center line to the left side of the ridge. When in line, push down on the paper and create another fold. Do not unfold. 
+Step 6: Repeat Step 5 as a mirror image on the upper left corner of the paper, bringing the top edge of the left corner to be in line with the center fold. Do not unfold. Thge paper should now have two folds, creating a peak where the two folds meet.
+Step 7: Keeping the folded paper as is in front of you, bring the folded egde of paper at the top right to align with the center fold. When the edge is aligned, press down on the paper and make a new fold. Do no unfold.
+Step 8: Repeat Step 7 as a mirror image on the upper left edge of the paper. Align the upper edge to the center fold, and when in line, press down on the paper making a new fold. Do not unfold.
+Step 9: Keeping the folds you just made in Steps 7 through 8 in place, lift the right side half of the paper and fold the paper back in half along the original center fold you made in Step 2. All previous folds should be nestled inside of the centerfold.
+Step 10: From here, lift the corner of paper on the left egde closest to you, making sure to only lift the top half and leaving the botton half lying on the table. Lift up this corner and align the longest edge to the paper's center fold on the right. When these edges are aligned, press down on the paper to make a fold. Do not unfold.
+Stepp 11: Flip the paper over so that the fold you completed in the last step is not flat on the surface in front of you and that the developing point is facing away from you.
+Step 12: Lift up the corner of paper on your right closest to you and bring the longest edge on the right to meet the longest edge of the paper's center fold the left. When these edge are aligned, press down on the paper to make a new fold.
+Step 13: Gently loosen the folds created in Steps 10 and 12, but not completely unfolding them. If folded properly, your paper airplane should be complete amd ready to fly.
