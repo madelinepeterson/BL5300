@@ -1,1 +1,1 @@
-# BL5300
+This is a repositroy for BL5300 class assignments.
