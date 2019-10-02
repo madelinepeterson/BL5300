@@ -1,0 +1,10 @@
+
+Original link to google drive data file
+https://drive.google.com/a/mtu.edu/file/d/1nu6aYpmOFep5huUw1gyfcXjo-fpAqg0L/view?usp=sharing
+
+Code to download the data file
+gdown.pl https://drive.google.com/file/d/1nu6aYpmOFep5huUw1gyfcXjo-fpAqg0L/edit D23_1.fastq.gz
+
+https://drive.google.com/a/mtu.edu/file/d/1RoVAcT0IXV2DT9l5qWoI2NjPuJltpWDf/view?usp=sharing
+
+gdown.pl https://drive.google.com/file/d/1RoVAcT0IXV2DT9l5qWoI2NjPuJltpWDf/edit D23_2.fastq.gz
