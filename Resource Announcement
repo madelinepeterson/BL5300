@@ -1,0 +1,59 @@
+This assignment includes the initial steps in downloading, trimming, and assembling raw data
+
+Dowloading data in the 30 day temp file:
+mkdir resource_announcement
+R1
+https://drive.google.com/a/mtu.edu/file/d/1nu6aYpmOFep5huUw1gyfcXjo-fpAqg0L/view?usp=sharing
+  gdown.pl https://drive.google.com/file/d/1nu6aYpmOFep5huUw1gyfcXjo-fpAqg0L/edit D23_R1.fastq.gz
+R2
+https://drive.google.com/a/mtu.edu/file/d/1RoVAcT0IXV2DT9l5qWoI2NjPuJltpWDf/view?usp=sharing
+  gdown.pl https://drive.google.com/file/d/1RoVAcT0IXV2DT9l5qWoI2NjPuJltpWDf/edit D23_R2.fastq.gz
+
+Then we'll need to unzip the files.
+  gunzip D23_R1.fastq.gz
+  gunzip D23_R2.fastq.gz
+  
+And transforming these files into readable .fastq files.
+
+Now that we have the .fatsq files, we can assess the quality of the data.
+  fastqc D23_R1.fastq
+  fastqc D23_R2.fastq
+Which we can then open in by clicking on the html files in our desktop files using WinSCP, showing us the quality report.
+The report shows there are quality issues in both of the reads towards the end of the sequences. We can trim these bad quality sections and cut the adapter sequences. The adapter sequences are for those used in Illumina sequencing.
+  cutadapt -q 20,20 -a CTGTCTCTTATACACATCTCCGAGCCCACGAGAC -A CTGTCTCTTATACACATCTGACGCTGCCGACGA -m 50 --max-n 0 -o D23_R1.cutadapt.fastq -p D23_R2.cutadapt.fastq D23_R1.fastq D23_R2.fastq
+  
+Since there is no reference sequence for this data, it will be assembled de novo usin SPAdes. First we must activate the "de novo" program.
+  conda activate de_novo
+Since we don't know what k-mer length will provide the best quality output, we can assign it to run a number of different k-mers at once. Running it carefully will run more slowly, but provide better qulity output.
+  spades.py -k 21,51,71,91,111,127 --careful --pe1-1 D23_R1.cutadapt.fastq --pe1-2 D23_R2.cutadapt.fastq -o D23_spades.output
+
+To assess the quality of the assembly, we can use QUAST
+  cd D23_spades.output
+  quast contigs.fasta quast.contigs
+We can review the output by clicking report.html in our desktop files.
+
+RESULTS
+   48 contigs
+   43.81% GC content
+   576084 largest contig
+   239015 N50
+   
+ Now that we have the assembled genome of decent quality, we can annotate sequence to identify elements.
+ To do so, we must first format out SPAdes output file to be compatible for use in the annotation program prokka. The contig names that result from the SPAdes program are too long and must be replaced by shorter, prokka-readable names.
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
