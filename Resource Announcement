@@ -22,7 +22,7 @@ Which we can then open in by clicking on the html files in our desktop files usi
 The report shows there are quality issues in both of the reads towards the end of the sequences. We can trim these bad quality sections and cut the adapter sequences. The adapter sequences are for those used in Illumina sequencing.
   cutadapt -q 20,20 -a CTGTCTCTTATACACATCTCCGAGCCCACGAGAC -A CTGTCTCTTATACACATCTGACGCTGCCGACGA -m 50 --max-n 0 -o D23_R1.cutadapt.fastq -p D23_R2.cutadapt.fastq D23_R1.fastq D23_R2.fastq
   
-Since there is no reference sequence for this data, it will be assembled de novo usin SPAdes. First we must activate the "de novo" program.
+Since there is no reference sequence for this data, it will be assembled de novo using SPAdes. First we must activate the "de novo" program.
   conda activate de_novo
 Since we don't know what k-mer length will provide the best quality output, we can assign it to run a number of different k-mers at once. Running it carefully will run more slowly, but provide better qulity output.
   spades.py -k 21,51,71,91,111,127 --careful --pe1-1 D23_R1.cutadapt.fastq --pe1-2 D23_R2.cutadapt.fastq -o D23_spades.output
@@ -40,9 +40,18 @@ RESULTS
    
  Now that we have the assembled genome of decent quality, we can annotate sequence to identify elements.
  To do so, we must first format out SPAdes output file to be compatible for use in the annotation program prokka. The contig names that result from the SPAdes program are too long and must be replaced by shorter, prokka-readable names.
+    awk '/^>/{print ">D23_" ++i; next}{print}' < contigs.fasta > contigs_names.fasta
+
+To keep out outputs more organized, we will want to make a new directory to store the results of prokka annotation, first by creating a new directory under the main resource_announcement directory, and secondly by copying our new contig file into the new directory.
+  mkdir D23_prokka.output
+  cp D23_spades.output/contigs_names.fasta D23_prokka.output
+
+From here, we can run this .fasta file of assembled contigs through the prokka annotation program.
+   conda activate annotation
+   prokka --outdir D23 --prefix D23 contigs_names.fasta
    
-   
-   
+**Good site for analyzing prokka output, including how to create a blast db:
+https://angus.readthedocs.io/en/2017/prokka_genome_annotation.html
    
    
    
