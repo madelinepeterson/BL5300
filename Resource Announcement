@@ -32,11 +32,6 @@ To assess the quality of the assembly, we can use QUAST
   quast contigs.fasta quast.contigs
 We can review the output by clicking report.html in our desktop files.
 
-RESULTS
-   48 contigs
-   43.81% GC content
-   576084 largest contig
-   239015 N50
    
  Now that we have the assembled genome of decent quality, we can annotate sequence to identify elements.
  To do so, we must first format out SPAdes output file to be compatible for use in the annotation program prokka. The contig names that result from the SPAdes program are too long and must be replaced by shorter, prokka-readable names.
@@ -69,7 +64,8 @@ Counting 2926 lines, or annotated proteins.
      grep "tRNA" D23.annotated_proteins.tsv | wc -l
      grep "rRNA" D23.annotated_proteins.tsv | wc -l
      grep "CDS" D23.annotated_proteins.tsv | wc -l
-Of these, there are 2824 CDS, 147 tRNA, 1 tmRNA, and 18 rRNA proteins.
+Of these, there are 2824 CDS, 147 tRNA, 1 tmRNA, and 18 rRNA proteins. These results can also be found in the output D23.txt file whihc shows a different number of CDS (4334), tRNA (88), rRNA (12), and still 1 tmRNA. It is worth noting that these values also probably include the hypothetical proteins and inlcude all 103 contigs in the annotation analysis.
+
 
 
     
