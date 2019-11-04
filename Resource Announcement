@@ -22,6 +22,10 @@ Which we can then open in by clicking on the html files in our desktop files usi
 The report shows there are quality issues in both of the reads towards the end of the sequences. We can trim these bad quality sections and cut the adapter sequences. The adapter sequences are for those used in Illumina sequencing.
   cutadapt -q 20,20 -a CTGTCTCTTATACACATCTCCGAGCCCACGAGAC -A CTGTCTCTTATACACATCTGACGCTGCCGACGA -m 50 --max-n 0 -o D23_R1.cutadapt.fastq -p D23_R2.cutadapt.fastq D23_R1.fastq D23_R2.fastq
   
+To check the quality of the trimming:
+  fastqc D23_R1.cutadapt.fastq
+  fastqc D23_R2.cutadapt.fastq
+  
 Since there is no reference sequence for this data, it will be assembled de novo using SPAdes. First we must activate the "de novo" program.
   conda activate de_novo
 Since we don't know what k-mer length will provide the best quality output, we can assign it to run a number of different k-mers at once. Running it carefully will run more slowly, but provide better qulity output.
