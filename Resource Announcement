@@ -52,7 +52,28 @@ From here, we can run this .fasta file of assembled contigs through the prokka a
    
 **Good site for analyzing prokka output, including how to create a blast db:
 https://angus.readthedocs.io/en/2017/prokka_genome_annotation.html
-   
+
+From the .tsv prokka output file, we can see that there are many proteins listed as "hypothetical proteins". Creating a new file that contains all of these hypothetical proteins, 
+     grep "hypothetical" D23.tsv > D23.hypotheical_proteins.tsv
+     wc -l D23.hypothetical_proteins.tsv 
+Counting 1510 lines, or hypothetical proteins. 
+
+There's probably a number of these proteins that are real proteins, and some which may not. We can sort the hypothetical proteins by length, assuming that some of these proteins will be too short to be actual proteins. 
+    sort -k3,3 -n -r D23.hypothetical_proteins.tsv
+    
+We can also remove these lines and create a file with only annotated proteins
+     grep -v "hypothetical" D23.tsv > D23.annotated_proteins.tsv
+     wc -l D23.annotated_proteins.tsv
+Counting 2926 lines, or annotated proteins.
+
+     grep "tRNA" D23.annotated_proteins.tsv | wc -l
+     grep "rRNA" D23.annotated_proteins.tsv | wc -l
+     grep "CDS" D23.annotated_proteins.tsv | wc -l
+Of these, there are 2824 CDS, 147 tRNA, 1 tmRNA, and 18 rRNA proteins.
+
+
+    
+
    
    
    
