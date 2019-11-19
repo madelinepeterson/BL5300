@@ -1,0 +1,14 @@
+#This is a file containing the coding for TOC project
+
+#downloading the data from JGI
+  curl 'https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=PEATcosm2014_Bin_25#/11340.1.202021.GAGCTCA-TTGAGCT.fastq.gz' > bin1_raw.fastq.gz
+  
+  wget 'https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=PEATcosm2014_Bin_25#/11340.1.202021.GAGCTCA-TTGAGCT.fastq.gz' > bin1_raw.fastq.gz
+#neither code worked to download the raw seq data
+
+
+
+
+
+
+
