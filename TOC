@@ -1,5 +1,13 @@
 #This is a file containing the coding for TOC project
 
+#project ID's
+Bin 5 JGI Project Id: 1108358
+Bin 6 JGI Project Id: 1108364
+Bin 11 JGI Project Id: 1108376
+Bin 23 JGI Project Id: 1108382
+
+
+
 #downloading the data from JGI
   curl 'https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=PEATcosm2014_Bin_25#/11340.1.202021.GAGCTCA-TTGAGCT.fastq.gz' > bin1_raw.fastq.gz
   
