@@ -1,18 +1,23 @@
 #This is a file containing the coding for TOC project
 
-#project ID's
+#project ID's from PEATcosm on JGI
 Bin 5 JGI Project Id: 1108358
 Bin 6 JGI Project Id: 1108364
 Bin 11 JGI Project Id: 1108376
 Bin 23 JGI Project Id: 1108382
+#all data was uploaded through Globus
+Sequence File Name      JGI ID  Bin_Number
+11340.2.202025.CCAGTGT-AACACTG.fastq.gz 1108358 5
+11340.3.202029.AGCTAAC-GGTTAGC.fastq.gz 1108364 6
+11340.5.202037.TCATCAC-GGTGATG.fastq.gz 1108376 11
+11340.6.202041.GCTACGT-AACGTAG.fastq.gz 1108382 17
+11424.8.206633.CGTAGGT-AACCTAC.fastq.gz 1100265 23
 
 
+#format of raw read data from JGI is interleved-- meaning it contains both the forward and reverse reads in a single file. For my purposes, coding for assembly and annotation is designed to take those read files separately, thus they are separated. 
 
-#downloading the data from JGI
-  curl 'https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=PEATcosm2014_Bin_25#/11340.1.202021.GAGCTCA-TTGAGCT.fastq.gz' > bin1_raw.fastq.gz
-  
-  wget 'https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=PEATcosm2014_Bin_25#/11340.1.202021.GAGCTCA-TTGAGCT.fastq.gz' > bin1_raw.fastq.gz
-#neither code worked to download the raw seq data
+#separating the files
+reformat.sh in=11340.2.202025.CCAGTGT-AACACTG.fastq.gz out1=Bin5_R1.fastq.gz out2=Bin5_R2.fastq.gz
 
 
 
