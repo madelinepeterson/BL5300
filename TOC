@@ -19,6 +19,32 @@ Sequence File Name      JGI ID  Bin_Number
 #separating the files
 reformat.sh in=11340.2.202025.CCAGTGT-AACACTG.fastq.gz out1=Bin5_R1.fastq.gz out2=Bin5_R2.fastq.gz
 
+#need to install conda in order to then download and use FastQC and later the de novo assembler (SPAdes)
+conda create -n de_novo -c bioconda -c conda-forge fastqc=0.11.5 \
+             trimmomatic=0.36 spades=3.11.1 quast=5.0.2 \
+             bowtie2=2.2.5 java-jdk=8.0.112 --yes
+             
+#need to check quality and trim the data using FastQC and cutadapt
+#note, cutadapt has limitations by only cutting the ends of the data, and not necessarily screening through the longer end stretch of low-quality data
+conda install fastqc
+conda install cutadapt
+
+#then we want to run FastQC and check the quality of the raw reads
+#starting by making a new directory to organize the fastQC output
+mkdir trimming- will manually move output files later
+
+fastqc Bin5_R1.fastq.gz
+fastqc Bin5_R2.fastq.gz
+#output of fastqc shows that the sequences are actually of very nice quality
+fastqc Bin6_R1.fastq.gz
+fastqc Bin6_R2.fastq.gz
+fastqc Bin11_R1.fastq.gz
+fastqc Bin11_R2.fastq.gz
+fastqc Bin23_R1.fastq.gz
+fastqc Bin23_R2.fastq.gz
+
+
+
 
 
 
