@@ -31,11 +31,20 @@ conda install cutadapt
 
 #then we want to run FastQC and check the quality of the raw reads
 #starting by making a new directory to organize the fastQC output
-mkdir trimming- will manually move output files later
+mkdir trimming
+#will manually move output files later
 
 fastqc Bin5_R1.fastq.gz
 fastqc Bin5_R2.fastq.gz
-#output of fastqc shows that the sequences are actually of very nice quality
+#output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
+
+#Activating and using de novo assembly tool SPAdes to assemble bin 5
+#Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
+
+conda activate de_novo
+spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
+
+
 fastqc Bin6_R1.fastq.gz
 fastqc Bin6_R2.fastq.gz
 fastqc Bin11_R1.fastq.gz
