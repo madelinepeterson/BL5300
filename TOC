@@ -1,5 +1,13 @@
 #This is a file containing the coding for TOC project
 
+##Note creation of screen through prior to running large data:
+screen -S file_name
+##to detach 
+Ctrl+a+d
+##to terminate session
+Ctrl+a
+:quit
+
 #project ID's from PEATcosm on JGI
 Bin 5 JGI Project Id: 1108358
 Bin 6 JGI Project Id: 1108364
@@ -36,6 +44,12 @@ mkdir trimming
 
 fastqc Bin5_R1.fastq.gz
 fastqc Bin5_R2.fastq.gz
+fastqc Bin6_R1.fastq.gz
+fastqc Bin6_R2.fastq.gz
+fastqc Bin11_R1.fastq.gz
+fastqc Bin11_R2.fastq.gz
+fastqc Bin23_R1.fastq.gz
+fastqc Bin23_R2.fastq.gz
 #output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
 
 #Activating and using de novo assembly tool SPAdes to assemble bin 5
@@ -48,12 +62,6 @@ spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_
 spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
 
 
-fastqc Bin6_R1.fastq.gz
-fastqc Bin6_R2.fastq.gz
-fastqc Bin11_R1.fastq.gz
-fastqc Bin11_R2.fastq.gz
-fastqc Bin23_R1.fastq.gz
-fastqc Bin23_R2.fastq.gz
 
 
 
