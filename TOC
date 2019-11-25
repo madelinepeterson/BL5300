@@ -43,6 +43,9 @@ fastqc Bin5_R2.fastq.gz
 
 conda activate de_novo
 spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
+#Note: kmer coutning error occurred, recomendation to add -t 10 to the code to specify number of threads created.
+
+spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
 
 
 fastqc Bin6_R1.fastq.gz
