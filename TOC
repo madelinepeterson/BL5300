@@ -24,7 +24,7 @@ Sequence File Name      JGI ID  Bin_Number
 
 #format of raw read data from JGI is interleved-- meaning it contains both the forward and reverse reads in a single file. For my purposes, coding for assembly and annotation is designed to take those read files separately, thus they are separated. 
 
-#separating the files
+#code for separating the files
 reformat.sh in=11340.2.202025.CCAGTGT-AACACTG.fastq.gz out1=Bin5_R1.fastq.gz out2=Bin5_R2.fastq.gz
 
 #need to install conda in order to then download and use FastQC and later the de novo assembler (SPAdes)
@@ -40,17 +40,20 @@ conda install cutadapt
 #then we want to run FastQC and check the quality of the raw reads
 #starting by making a new directory to organize the fastQC output
 mkdir trimming
-#will manually move output files later
+#will manually move output files into this folder
 
 fastqc Bin5_R1.fastq.gz
 fastqc Bin5_R2.fastq.gz
+#output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
+
+#run the QC reports on the other sets of reads
 fastqc Bin6_R1.fastq.gz
 fastqc Bin6_R2.fastq.gz
 fastqc Bin11_R1.fastq.gz
 fastqc Bin11_R2.fastq.gz
 fastqc Bin23_R1.fastq.gz
 fastqc Bin23_R2.fastq.gz
-#output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
+
 
 #Activating and using de novo assembly tool SPAdes to assemble bin 5
 #Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
@@ -60,11 +63,22 @@ spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_
 #Note: kmer coutning error occurred, recomendation to add -t 10 to the code to specify number of threads created.
 
 spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
+#Note: failure again at the kmer counting step in the assembly
 
+#elimination of kmer specification and deletion of code for thread specification
+spades.py --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v3
+#Note: failure at kmer counting step
 
+#install the annotation program packages
+conda create -n annotation prokka augustus
+#activation code
+conda activate annotation
 
+# code book for augustus: http://augustus.gobics.de/binaries/README.TXT
+#example of use of augustus 
+augustus --UTR=on --species=fly D.ps.short.fasta > D.ps.gff
 
-
+#QUESTION: If I have a db of an example of one or more of each gene type, where do I specify the '% similarity to' parameter?-- In the blastable db step?
 
 
 
