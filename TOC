@@ -86,6 +86,9 @@ spades.py -k 21,41,71,101,127 -o Bin5_assembled_output_v1 -1 normalized_Bin5R1.f
 #using metaspades
 metaspades.py  -1 Bin5_R1.cutadapt.fastq -2 Bin5_R2.cutadapt.fastq -o Bin5_metaspades_output_v1
 
+#site for code increasing gb cap for assembly
+https://www.biostars.org/p/367413/
+
 #install the annotation program packages
 conda create -n annotation prokka augustus
 #activation code
