@@ -82,6 +82,7 @@ spades.py -k 21,41,71,101,127 -o out -1-2 normalized.fq
 spades.py -k 21,41,71,101,127 -o Bin5_assembled_output_v1 -1 normalized_Bin5R1.fq -2 normalized_Bin5R2.fq 
 #Note: failed at same step
 *****************
+#spades manual (including metaspades): http://cab.spbu.ru/files/release3.12.0/manual.html#meta
 #using metaspades
 metaspades.py  -1 Bin5_R1.cutadapt.fastq -2 Bin5_R2.cutadapt.fastq -o Bin5_metaspades_output_v1
 
