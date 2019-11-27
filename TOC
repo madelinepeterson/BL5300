@@ -46,6 +46,10 @@ fastqc Bin5_R1.fastq.gz
 fastqc Bin5_R2.fastq.gz
 #output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
 
+cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACCCAGTGTTATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTCCAGTGTTGTGTAGATCT -m 50 --max-n 0 -o Bin5_R1.cutadapt.fastq -p Bin5_R2.cutadapt.fastq Bin5_R1.fastq.gz Bin5_R2.fastq.gz
+fastqc Bin5_R1.cutadapt.fastq
+fastqc Bin5_R2.cutadapt.fastq
+
 #run the QC reports on the other sets of reads
 fastqc Bin6_R1.fastq.gz
 fastqc Bin6_R2.fastq.gz
@@ -54,6 +58,19 @@ fastqc Bin11_R2.fastq.gz
 fastqc Bin23_R1.fastq.gz
 fastqc Bin23_R2.fastq.gz
 
+~~~~ #may use the bbduk trimming tool instead as the initial fastqc doesn't show any clear adapter errors for the other 3 bins~~~
+cutadapt -q 20,20 -m 50 --max-n 0 -o Bin6_R1.cutadapt.fastq -p Bin6_R2.cutadapt.fastq Bin6_R1.fastq.gz Bin6_R2.fastq.gz
+fastqc Bin6_R1.cutadapt.fastq
+fastqc Bin6_R2.cutadapt.fastq
+
+cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACCCAGTGTTATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTCCAGTGTTGTGTAGATCT -m 50 --max-n 0 -o Bin11_R1.cutadapt.fastq -p Bin11_R2.cutadapt.fastq Bin11_R1.fastq.gz Bin11_R2.fastq.gz
+cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACCCAGTGTTATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTCCAGTGTTGTGTAGATCT -m 50 --max-n 0 -o Bin23_R1.cutadapt.fastq -p Bin23_R2.cutadapt.fastq Bin23_R1.fastq.gz Bin23_R2.fastq.gz
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#using bbduk commands from creator suggestion: https://www.biostars.org/p/237573/
+bbduk.sh in= Bin6_R1.fastq.qz in2= Bin6_R2.fastq.gz out=Bin6_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
+
+fastqc Bin6_trimmed.fq
 
 #Activating and using de novo assembly tool SPAdes to assemble bin 5
 #Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
