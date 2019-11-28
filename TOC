@@ -94,7 +94,7 @@ bbnorm.sh in=Bin6R1_trimmed.fq out=Bin6_normalized.fq target=100 min=5
 reformat.sh in=Bin6_normalized.fq out1=Bin6_1.fq out2=Bin6_2.fq
 
 conda activate de_novo
-metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
+metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 n1.fq --pe1-2 n2.fq -o Bin6_spades_output
 
 fastqc Bin6R1_trimmed.fq
 
@@ -114,6 +114,33 @@ fastqc Bin23_R1.cutadapt.fastq
 fastqc Bin23_R2.cutadapt.fastq
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Assembling Bin 11
+
+bbduk.sh in=Bin11_R1.cutadapt.fastq in2=Bin11_R2.cutadapt.fastq out1=Bin11_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
+
+
+bbnorm.sh in=Bin11_trimmed.fq out=Bin11_normalized.fq target=100 min=5
+
+reformat.sh in=Bin11_normalized.fq out1=Bin11_1.fq out2=Bin11_2.fq
+
+conda activate de_novo
+metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 Bin11_1.fq --pe1-2 Bin11_2.fq -o Bin11_spades_output
+
+fastqc Bin11_trimmed.fq
+~~~~~~~~~~~~~~~~~~~~~~~
+#Assembling Bin 23
+
+bbduk.sh in=Bin23_R1.cutadapt.fastq in2=Bin23_R2.cutadapt.fastq out1=Bin23_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
+
+bbnorm.sh in=Bin23_trimmed.fq out=Bin23_normalized.fq target=100 min=5
+
+reformat.sh in=Bin23_normalized.fq out1=Bin23_1.fq out2=Bin23_2.fq
+
+conda activate de_novo
+metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 Bin23_1.fq --pe1-2 Bin23_2.fq -o Bin23_spades_output
+
+fastqc Bin23_trimmed.fq
+~~~~~~~~~~~~~~~~~~~~~~~
 
 #Activating and using de novo assembly tool SPAdes to assemble bin 5
 #Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
@@ -156,6 +183,7 @@ conda activate annotation
 augustus --UTR=on --species=fly D.ps.short.fasta > D.ps.gff
 
 #QUESTION: If I have a db of an example of one or more of each gene type, where do I specify the '% similarity to' parameter?-- In the blastable db step?
+
 
 
 
