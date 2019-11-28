@@ -46,6 +46,7 @@ fastqc Bin5_R1.fastq.gz
 fastqc Bin5_R2.fastq.gz
 #output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
 
+#adapter sequences pulled from overrepresented sequences in the fastqc report
 cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACCCAGTGTTATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTCCAGTGTTGTGTAGATCT -m 50 --max-n 0 -o Bin5_R1.cutadapt.fastq -p Bin5_R2.cutadapt.fastq Bin5_R1.fastq.gz Bin5_R2.fastq.gz
 fastqc Bin5_R1.cutadapt.fastq
 fastqc Bin5_R2.cutadapt.fastq
@@ -58,27 +59,61 @@ fastqc Bin11_R2.fastq.gz
 fastqc Bin23_R1.fastq.gz
 fastqc Bin23_R2.fastq.gz
 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Assembling Bin 5
+
+bbduk.sh in=Bin5_R1.cutadapt.fastq in2=Bin5_R2.cutadapt.fastq out=trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
+
+bbnorm.sh in=trimmed.fq out=normalized.fq target=100 min=5
+
+reformat.sh in=normalized.fq out1=n1.fq out2=n2.fq
+
+conda activate de_novo
+metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Assemebling Bin 6
+ 
+#trimmed adapter sequence on the reverse read; sequence obtained in fastqc report of overrepresented sequences
 cutadapt -q 20,20 -m 50 --max-n 0 -A TGGCTCGAGTTTTTCAGCAAGATGTTGACTGAGAATTCATGGACGGCCTA -o Bin6_R1.cutadapt.fastq -p Bin6_R2.cutadapt.fastq Bin6_R1.fastq.gz Bin6_R2.fastq.gz
 fastqc Bin6_R1.cutadapt.fastq
 fastqc Bin6_R2.cutadapt.fastq
 
 bbduk.sh in= Bin6_R1.cutadapt.fastq in= Bin6_R2.cutadapt.fastq out=Bin6_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
 #error
-bbduk.sh in= Bin6_R1.cutadapt.fastq in2= Bin6_R2.cutadapt.fastq out1 =Bin6R1_trimmed.fq out2=Bin6R2_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
+bbduk.sh in=Bin6_R1.cutadapt.fastq in2= Bin6_R2.cutadapt.fastq out1 =Bin6R1_trimmed.fq out2=Bin6R2_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
 #error
 
-~~~~~~~~~~~~
+#retry no spaces after =
+bbduk.sh in=Bin6_R1.cutadapt.fastq in2=Bin6_R2.cutadapt.fastq out1=Bin6R1_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
+#SUCCESSFUL
+
+bbnorm.sh in=Bin6R1_trimmed.fq out=Bin6_normalized.fq target=100 min=5
+
+reformat.sh in=Bin6_normalized.fq out1=Bin6_1.fq out2=Bin6_2.fq
+
+conda activate de_novo
+metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
+
+fastqc Bin6R1_trimmed.fq
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#trimming  Bin 11 and Bin 23
+
 #trim sequences pulled from fastqc report of overrepresented sequences
 cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACTCATCACCATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTTCATCACCGTGTAGATCT -m 50 --max-n 0 -o Bin11_R1.cutadapt.fastq -p Bin11_R2.cutadapt.fastq Bin11_R1.fastq.gz Bin11_R2.fastq.gz
+
+fastqc Bin11_R1.cutadapt.fastq
+fastqc Bin11_R2.cutadapt.fastq
 
 #trim sequences pulled from fastqc report of overrepresented sequences
 cutadapt -q 20,20 -a GTCCCGAGTTGCTGGTCCCAACCTTCAGCACTTCGCACCGCTCAGGAATT -A GGTAAGTCTAAGCATCTTCACTCTGTGGCGTTGAATGGACTTACCACTGG -m 50 --max-n 0 -o Bin23_R1.cutadapt.fastq -p Bin23_R2.cutadapt.fastq Bin23_R1.fastq.gz Bin23_R2.fastq.gz
 
+fastqc Bin23_R1.cutadapt.fastq
+fastqc Bin23_R2.cutadapt.fastq
 
-#using bbduk commands from creator suggestion: https://www.biostars.org/p/237573/
-bbduk.sh in= Bin6_R1.fastq.qz in2= Bin6_R2.fastq.gz out=Bin6_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
-
-fastqc Bin6_trimmed.fq
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #Activating and using de novo assembly tool SPAdes to assemble bin 5
 #Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
@@ -110,9 +145,6 @@ spades.py -k 21,41,71,101,127 -o Bin5_assembled_output_v1 -1 normalized_Bin5R1.f
 #spades manual (including metaspades): http://cab.spbu.ru/files/release3.12.0/manual.html#meta
 #using metaspades
 metaspades.py  -1 Bin5_R1.cutadapt.fastq -2 Bin5_R2.cutadapt.fastq -o Bin5_metaspades_output_v1
-
-#site for code increasing gb cap for assembly
-https://www.biostars.org/p/367413/
 
 #install the annotation program packages
 conda create -n annotation prokka augustus
