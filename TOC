@@ -59,7 +59,19 @@ fastqc Bin11_R2.fastq.gz
 fastqc Bin23_R1.fastq.gz
 fastqc Bin23_R2.fastq.gz
 
+****************
+#Initial attempts at Bin 5 assembly and troubleshooting
+##From https://www.biostars.org/p/237573/ about the error 225 kmer counting
 
+#Normalize
+bbnorm.sh in=trimmed.fq out=normalized.fq target=100 min=5
+bbnorm.sh in=Bin5_R1.cutadapt.fastq out=normalized_Bin5.fq target=100 min=5
+bbnorm.sh in=Bin5_R2.cutadapt.fastq out=normalized_Bin5.fq target=100 min=5
+
+#Assemble
+spades.py -k 21,41,71,101,127 -o out -1-2 normalized.fq
+spades.py -k 21,41,71,101,127 -o Bin5_assembled_output_v1 -1 normalized_Bin5R1.fq -2 normalized_Bin5R2.fq 
+#Note: failed at same step
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Assembling Bin 5
 
@@ -70,13 +82,14 @@ bbnorm.sh in=trimmed.fq out=normalized.fq target=100 min=5
 reformat.sh in=normalized.fq out1=n1.fq out2=n2.fq
 
 conda activate de_novo
-metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
+metaspades.py -k 21,51,71,91,111,127 --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Assemebling Bin 6
  
 #trimmed adapter sequence on the reverse read; sequence obtained in fastqc report of overrepresented sequences
 cutadapt -q 20,20 -m 50 --max-n 0 -A TGGCTCGAGTTTTTCAGCAAGATGTTGACTGAGAATTCATGGACGGCCTA -o Bin6_R1.cutadapt.fastq -p Bin6_R2.cutadapt.fastq Bin6_R1.fastq.gz Bin6_R2.fastq.gz
+
 fastqc Bin6_R1.cutadapt.fastq
 fastqc Bin6_R2.cutadapt.fastq
 
@@ -85,7 +98,7 @@ bbduk.sh in= Bin6_R1.cutadapt.fastq in= Bin6_R2.cutadapt.fastq out=Bin6_trimmed.
 bbduk.sh in=Bin6_R1.cutadapt.fastq in2= Bin6_R2.cutadapt.fastq out1 =Bin6R1_trimmed.fq out2=Bin6R2_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
 #error
 
-#retry no spaces after =
+#retry no spaces after ' = '
 bbduk.sh in=Bin6_R1.cutadapt.fastq in2=Bin6_R2.cutadapt.fastq out1=Bin6R1_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
 #SUCCESSFUL
 
@@ -94,7 +107,8 @@ bbnorm.sh in=Bin6R1_trimmed.fq out=Bin6_normalized.fq target=100 min=5
 reformat.sh in=Bin6_normalized.fq out1=Bin6_1.fq out2=Bin6_2.fq
 
 conda activate de_novo
-metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 n1.fq --pe1-2 n2.fq -o Bin6_spades_output
+metaspades.py -k 21,51,71,91,111,127 --pe1-1 n1.fq --pe1-2 n2.fq -o Bin6_spades_output
+#note, code will not run if command -careful is inserted
 
 fastqc Bin6R1_trimmed.fq
 
@@ -124,7 +138,7 @@ bbnorm.sh in=Bin11_trimmed.fq out=Bin11_normalized.fq target=100 min=5
 reformat.sh in=Bin11_normalized.fq out1=Bin11_1.fq out2=Bin11_2.fq
 
 conda activate de_novo
-metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 Bin11_1.fq --pe1-2 Bin11_2.fq -o Bin11_spades_output
+metaspades.py -k 21,51,71,91,111,127 --pe1-1 Bin11_1.fq --pe1-2 Bin11_2.fq -o Bin11_spades_output
 
 fastqc Bin11_trimmed.fq
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -137,7 +151,7 @@ bbnorm.sh in=Bin23_trimmed.fq out=Bin23_normalized.fq target=100 min=5
 reformat.sh in=Bin23_normalized.fq out1=Bin23_1.fq out2=Bin23_2.fq
 
 conda activate de_novo
-metaspades.py -k 21,51,71,91,111,127 --careful --pe1-1 Bin23_1.fq --pe1-2 Bin23_2.fq -o Bin23_spades_output
+metaspades.py -k 21,51,71,91,111,127 --pe1-1 Bin23_1.fq --pe1-2 Bin23_2.fq -o Bin23_spades_output
 
 fastqc Bin23_trimmed.fq
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -156,18 +170,6 @@ spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2
 spades.py --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v3
 #Note: failure at kmer counting step
 
-****************
-##From https://www.biostars.org/p/237573/ about the error 225 kmer counting
-
-#Normalize
-bbnorm.sh in=trimmed.fq out=normalized.fq target=100 min=5
-bbnorm.sh in=Bin5_R1.cutadapt.fastq out=normalized_Bin5.fq target=100 min=5
-bbnorm.sh in=Bin5_R2.cutadapt.fastq out=normalized_Bin5.fq target=100 min=5
-
-#Assemble
-spades.py -k 21,41,71,101,127 -o out -1-2 normalized.fq
-spades.py -k 21,41,71,101,127 -o Bin5_assembled_output_v1 -1 normalized_Bin5R1.fq -2 normalized_Bin5R2.fq 
-#Note: failed at same step
 *****************
 #spades manual (including metaspades): http://cab.spbu.ru/files/release3.12.0/manual.html#meta
 #using metaspades
