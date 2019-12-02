@@ -184,7 +184,31 @@ conda activate annotation
 #example of use of augustus 
 augustus --UTR=on --species=fly D.ps.short.fasta > D.ps.gff
 
-#QUESTION: If I have a db of an example of one or more of each gene type, where do I specify the '% similarity to' parameter?-- In the blastable db step?
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#created .faa file of peroxidase sequences from fPoxDB
+#need to then convert the contigs from the spades output into the blastable db
+
+makeblastdb -in contigs.fasta -dbtype nucl -title Bin_5_db -out Bin5_db
+blastn -db Bin5_db -query Blastable_DB.faa -out Bin_5_blast.txt -outfmt 7
+
+makeblastdb -in contigs.fasta -dbtype nucl -title Bin_6_db -out Bin6_db
+blastn -db Bin6_db -query Blastable_DB.faa -out Bin_6_blast.txt -outfmt 7
+#Looking at the .txt output file, there are no hits matching any of the sequence references 
+
+#running  augustus in an attempt to locate any peroxidase genes
+augustus --UTR=on --species=coprinus_cinereus contigs.fasta > Bin5.gff
+#error initially occurs
+
+#removal of the UTR command
+augustus  --species=coprinus_cinereus contigs.fasta > Bin5.gff
+
+
+
+
+
+
 
 
 
