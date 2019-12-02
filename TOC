@@ -197,15 +197,41 @@ makeblastdb -in contigs.fasta -dbtype nucl -title Bin_6_db -out Bin6_db
 blastn -db Bin6_db -query Blastable_DB.faa -out Bin_6_blast.txt -outfmt 7
 #Looking at the .txt output file, there are no hits matching any of the sequence references 
 
+~~~~~~~~~~~~~~~~~~~~~
+Bin 5
+
 #running  augustus in an attempt to locate any peroxidase genes
 augustus --UTR=on --species=coprinus_cinereus contigs.fasta > Bin5.gff
 #error initially occurs
 
 #removal of the UTR command
 augustus  --species=coprinus_cinereus contigs.fasta > Bin5.gff
+#running successfully
+
+#takes the .gff file of found genes and creates a .faa file--pulling out the sequences, renaming all of the genes with a unique identifier
+getAnnoFasta.pl Bin5.gff
+#creating output Bin5.aa, extracting protein sequences from the metagenome
+
+#taking amino acid sequences from the metagenome and creating a blastable database
+makeblastdb -in Bin5.aa -dbtype prot -title Bin5_aa -out Bin5_metagenome_aa_db
+
+blastp -db Bin5_metagenome_aa_db -query Bin5_aa_DB -out Bin_5_aa_blast.txt -outfmt 7
 
 
+~~~~~~~~~~~
+Bin 6
 
+augustus  --species=coprinus_cinereus contigs.fasta > Bin6.gff
+#running successfully
+
+#takes the .gff file of found genes and creates a .faa file--pulling out the sequences, renaming all of the genes with a unique identifier
+getAnnoFasta.pl Bin5.gff
+#creating output Bin5.aa, extracting protein sequences from the metagenome
+
+#taking amino acid sequences from the metagenome and creating a blastable database
+makeblastdb -in Bin5.aa -dbtype prot -title Bin5_aa -out Bin5_metagenome_aa_db
+
+blastp -db Bin5_metagenome_aa_db -query Bin5_aa_DB -out Bin_5_aa_blast.txt -outfmt 7
 
 
 
