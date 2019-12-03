@@ -215,7 +215,7 @@ getAnnoFasta.pl Bin5.gff
 #taking amino acid sequences from the metagenome and creating a blastable database
 makeblastdb -in Bin5.aa -dbtype prot -title Bin5_aa -out Bin5_metagenome_aa_db
 
-blastp -db Bin5_metagenome_aa_db -query Bin5_aa_DB -out Bin_5_aa_blast.txt -outfmt 7
+blastp -db Bin5_metagenome_aa_db -query Blastable_aa_query.txt -out Bin5_aa_blast_output.txt -outfmt 7
 
 
 ~~~~~~~~~~~
@@ -225,13 +225,12 @@ augustus  --species=coprinus_cinereus contigs.fasta > Bin6.gff
 #running successfully
 
 #takes the .gff file of found genes and creates a .faa file--pulling out the sequences, renaming all of the genes with a unique identifier
-getAnnoFasta.pl Bin5.gff
-#creating output Bin5.aa, extracting protein sequences from the metagenome
+getAnnoFasta.pl Bin6.gff
 
 #taking amino acid sequences from the metagenome and creating a blastable database
-makeblastdb -in Bin5.aa -dbtype prot -title Bin5_aa -out Bin5_metagenome_aa_db
+makeblastdb -in Bin6.aa -dbtype prot -title Bin6_aa -out Bin6_metagenome_aa_db
 
-blastp -db Bin5_metagenome_aa_db -query Bin5_aa_DB -out Bin_5_aa_blast.txt -outfmt 7
+blastp -db Bin6_metagenome_aa_db -query Blastable_aa_query.txt -out Bin6_aa_blast_output.txt -outfmt 7
 
 
 
