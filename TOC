@@ -12,7 +12,7 @@ Ctrl+a
 Bin 5 JGI Project Id: 1108358
 Bin 6 JGI Project Id: 1108364
 Bin 11 JGI Project Id: 1108376
-Bin 23 JGI Project Id: 1108382
+Bin 23 JGI Project Id: 1100265
 #all data was uploaded through Globus
 Sequence File Name      JGI ID  Bin_Number
 11340.2.202025.CCAGTGT-AACACTG.fastq.gz 1108358 5
