@@ -85,6 +85,8 @@ reformat.sh in=normalized.fq out1=n1.fq out2=n2.fq
 conda activate de_novo
 metaspades.py -k 21,51,71,91,111,127 --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
 
+quast contigs.fasta -o quast_results
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Assemebling Bin 6
  
@@ -108,11 +110,11 @@ bbnorm.sh in=Bin6R1_trimmed.fq out=Bin6_normalized.fq target=100 min=5
 reformat.sh in=Bin6_normalized.fq out1=Bin6_1.fq out2=Bin6_2.fq
 
 conda activate de_novo
-metaspades.py -k 21,51,71,91,111,127 --pe1-1 n1.fq --pe1-2 n2.fq -o Bin6_spades_output
+metaspades.py -k 21,51,71,91,111,127 --pe1-1 Bin6_1.fq --pe1-2 Bin6_2.fq -o Bin6_spades_output
 #note, code will not run if command -careful is inserted
 
 fastqc Bin6R1_trimmed.fq
-
+quast contigs.fasta -o quast_results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #trimming  Bin 11 and Bin 23
 
@@ -162,7 +164,7 @@ fastqc Bin23_trimmed.fq
 
 conda activate de_novo
 spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
-#Note: kmer coutning error occurred, recomendation to add -t 10 to the code to specify number of threads created.
+#Note: kmer counting error occurred, recomendation to add -t 10 to the code to specify number of threads created.
 
 spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
 #Note: failure again at the kmer counting step in the assembly
