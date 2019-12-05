@@ -1,4 +1,5 @@
 #This is a file containing the coding for TOC project
+#processing metagenomic data and analyzing for POD content
 
 ##Note creation of screen through prior to running large data:
 screen -S file_name
@@ -231,12 +232,15 @@ getAnnoFasta.pl Bin6.gff
 makeblastdb -in Bin6.aa -dbtype prot -title Bin6_aa -out Bin6_metagenome_aa_db
 
 blastp -db Bin6_metagenome_aa_db -query Blastable_aa_query.txt -out Bin6_aa_blast_output.txt -outfmt 7
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+##editting annotation blast output file to highlight the best hits (even though none of them were significant)
 
+#To organize the data into showing only the information we want, query accession#,subj ver#, % ID, length, escore, and bitscore, and save it as it's own file.
+cut  -f 1,2,3,4,11,12  Bin6_aa_blast_output.txt  > Bin6aablast_columns.txt
 
+#selecting only hits that have a bit score above 40 since it's difficult to sort by evalue
+awk '$6>40'  Bin6aablast_columns.txt | sort -k6,6 -n -r > Bin6aablast_topbitscore.txt
 
-
-
-
-
-
+#removing the commments lines, leaving only the data lines
+grep -vw "#" Bin6aablast_topbitscore.txt  > Bin6aablast_bitscore_no_comments.txt
