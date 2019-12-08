@@ -15,6 +15,7 @@ Bin 6 JGI Project Id: 1108364
 Bin 11 JGI Project Id: 1108376
 Bin 23 JGI Project Id: 1100265
 #all data was uploaded through Globus
+#The names of the downloaded data files are as follows, with the bin number identification following each file name.
 Sequence File Name      JGI ID  Bin_Number
 11340.2.202025.CCAGTGT-AACACTG.fastq.gz 1108358 5
 11340.3.202029.AGCTAAC-GGTTAGC.fastq.gz 1108364 6
@@ -23,9 +24,8 @@ Sequence File Name      JGI ID  Bin_Number
 11424.8.206633.CGTAGGT-AACCTAC.fastq.gz 1100265 23
 
 
-#format of raw read data from JGI is interleved-- meaning it contains both the forward and reverse reads in a single file. For my purposes, coding for assembly and annotation is designed to take those read files separately, thus they are separated. 
-
-#code for separating the files
+#format of raw read data from JGI is interleved-- meaning it contains both the forward and reverse reads in a single file. For my purposes, coding for assembly and annotation is designed to take those read files separately, thus they are separated using the code below.
+#code for separating the files withthe code for bin 5 as an example.
 reformat.sh in=11340.2.202025.CCAGTGT-AACACTG.fastq.gz out1=Bin5_R1.fastq.gz out2=Bin5_R2.fastq.gz
 
 #need to install conda in order to then download and use FastQC and later the de novo assembler (SPAdes)
@@ -38,19 +38,27 @@ conda create -n de_novo -c bioconda -c conda-forge fastqc=0.11.5 \
 conda install fastqc
 conda install cutadapt
 
-#then we want to run FastQC and check the quality of the raw reads
+#then we want to run FastQC and check the quality of the initial raw reads
 #starting by making a new directory to organize the fastQC output
-mkdir trimming
-#will manually move output files into this folder
 
+#the output files from the reformat code are examined by running a fastqc of both the forward and reverse reads.
 fastqc Bin5_R1.fastq.gz
 fastqc Bin5_R2.fastq.gz
-#output of fastqc shows that the sequences are actually of very nice quality, however we still need to remove the primers and other low quality sequences
+#output of fastqc  for Bin 5 shows that the sequences are actually of very nice quality, however we still need to remove residual primers and other low quality sequences.
 
+#Following code removes low qual ad residual adapter sequences.
 #adapter sequences pulled from overrepresented sequences in the fastqc report
 cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACCCAGTGTTATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTCCAGTGTTGTGTAGATCT -m 50 --max-n 0 -o Bin5_R1.cutadapt.fastq -p Bin5_R2.cutadapt.fastq Bin5_R1.fastq.gz Bin5_R2.fastq.gz
 fastqc Bin5_R1.cutadapt.fastq
 fastqc Bin5_R2.cutadapt.fastq
+
+#The other three interleved data files also need to be separated.
+#Bin 6
+reformat.sh in=11340.3.202029.AGCTAAC-GGTTAGC.fastq.gz out1=Bin6_R1.fastq.gz out2=Bin6_R2.fastq.gz
+#Bin 11
+reformat.sh in=11340.5.202037.TCATCAC-GGTGATG.fastq.gz out1=Bin11_R1.fastq.gz out2=Bin11_R2.fastq.gz
+#Bin 23
+reformat.sh in=11424.8.206633.CGTAGGT-AACCTAC.fastq.gz out1=Bin23_R1.fastq.gz out2=Bin23_R2.fastq.gz
 
 #run the QC reports on the other sets of reads
 fastqc Bin6_R1.fastq.gz
@@ -60,8 +68,10 @@ fastqc Bin11_R2.fastq.gz
 fastqc Bin23_R1.fastq.gz
 fastqc Bin23_R2.fastq.gz
 
+
+
 ****************
-#Initial attempts at Bin 5 assembly and troubleshooting
+# Failed Initial attempts at Bin 5 assembly and troubleshooting
 ##From https://www.biostars.org/p/237573/ about the error 225 kmer counting
 
 #Normalize
@@ -69,22 +79,55 @@ bbnorm.sh in=trimmed.fq out=normalized.fq target=100 min=5
 bbnorm.sh in=Bin5_R1.cutadapt.fastq out=normalized_Bin5.fq target=100 min=5
 bbnorm.sh in=Bin5_R2.cutadapt.fastq out=normalized_Bin5.fq target=100 min=5
 
-#Assemble
+#Assemble example code
 spades.py -k 21,41,71,101,127 -o out -1-2 normalized.fq
+#Assemble code
 spades.py -k 21,41,71,101,127 -o Bin5_assembled_output_v1 -1 normalized_Bin5R1.fq -2 normalized_Bin5R2.fq 
 #Note: failed at same step
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#Assembling Bin 5
 
+#Activating and using de novo assembly tool SPAdes to assemble bin 5
+#Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
+
+conda activate de_novo
+spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
+#Note: kmer counting error occurred, recomendation to add -t 10 to the code to specify number of threads created.
+
+spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
+#Note: failure again at the kmer counting step in the assembly
+
+#elimination of kmer specification and deletion of code for thread specification
+spades.py --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v3
+#Note: failure at kmer counting step
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#spades manual (including metaspades): http://cab.spbu.ru/files/release3.12.0/manual.html#meta
+#using metaspades
+metaspades.py  -1 Bin5_R1.cutadapt.fastq -2 Bin5_R2.cutadapt.fastq -o Bin5_metaspades_output_v1
+
+#install the annotation program packages
+conda create -n annotation prokka augustus
+#activation code
+conda activate annotation
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Assembling Bin 5 (Successful)
+#After failed attempts using SPAdes, it was decided that further trimming may be needed.
+
+#Further trimming
 bbduk.sh in=Bin5_R1.cutadapt.fastq in2=Bin5_R2.cutadapt.fastq out=trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
 
+#Normalization
 bbnorm.sh in=trimmed.fq out=normalized.fq target=100 min=5
 
+#separation of interleved file to separate forward and reverse reads
 reformat.sh in=normalized.fq out1=n1.fq out2=n2.fq
 
+#assemble-- but this time using metaSPAdes rather than basic SPAdes
 conda activate de_novo
 metaspades.py -k 21,51,71,91,111,127 --pe1-1 n1.fq --pe1-2 n2.fq -o Bin5_spades_output
 
+#checking assembly quality using QUAST
 quast contigs.fasta -o quast_results
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,13 +159,15 @@ metaspades.py -k 21,51,71,91,111,127 --pe1-1 Bin6_1.fq --pe1-2 Bin6_2.fq -o Bin6
 fastqc Bin6R1_trimmed.fq
 quast contigs.fasta -o quast_results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#trimming  Bin 11 and Bin 23
+##trimming  Bin 11 
 
 #trim sequences pulled from fastqc report of overrepresented sequences
 cutadapt -q 20,20 -a GATCGGAAGAGCACACGTCTGAACTCCAGTCACTCATCACCATCTCGTAT -A GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTTCATCACCGTGTAGATCT -m 50 --max-n 0 -o Bin11_R1.cutadapt.fastq -p Bin11_R2.cutadapt.fastq Bin11_R1.fastq.gz Bin11_R2.fastq.gz
 
 fastqc Bin11_R1.cutadapt.fastq
 fastqc Bin11_R2.cutadapt.fastq
+
+##trimming  Bin 23
 
 #trim sequences pulled from fastqc report of overrepresented sequences
 cutadapt -q 20,20 -a GTCCCGAGTTGCTGGTCCCAACCTTCAGCACTTCGCACCGCTCAGGAATT -A GGTAAGTCTAAGCATCTTCACTCTGTGGCGTTGAATGGACTTACCACTGG -m 50 --max-n 0 -o Bin23_R1.cutadapt.fastq -p Bin23_R2.cutadapt.fastq Bin23_R1.fastq.gz Bin23_R2.fastq.gz
@@ -134,7 +179,6 @@ fastqc Bin23_R2.cutadapt.fastq
 #Assembling Bin 11
 
 bbduk.sh in=Bin11_R1.cutadapt.fastq in2=Bin11_R2.cutadapt.fastq out1=Bin11_trimmed.fq ktrim=r k=23 mink=11 hdist=1 ref=/data/softwares/bbmap/resources/adapters.fa tbo tpe
-
 
 bbnorm.sh in=Bin11_trimmed.fq out=Bin11_normalized.fq target=100 min=5
 
@@ -157,43 +201,22 @@ conda activate de_novo
 metaspades.py -k 21,51,71,91,111,127 --pe1-1 Bin23_1.fq --pe1-2 Bin23_2.fq -o Bin23_spades_output
 
 fastqc Bin23_trimmed.fq
-~~~~~~~~~~~~~~~~~~~~~~~
 
-#Activating and using de novo assembly tool SPAdes to assemble bin 5
-#Note: initial attempt to run SPAdes with kmers sized 21,51,71,91,111,127 created an error by having too many kmers lengths-- too much data to process. Therefor need to more be more efficient with kmer length
-
-conda activate de_novo
-spades.py -k 21,71,91,127 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
-#Note: kmer counting error occurred, recomendation to add -t 10 to the code to specify number of threads created.
-
-spades.py -k 21,71,91,127 -t 10 --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v2
-#Note: failure again at the kmer counting step in the assembly
-
-#elimination of kmer specification and deletion of code for thread specification
-spades.py --careful --pe1-1 Bin5_R1.cutadapt.fastq --pe1-2 Bin5_R2.cutadapt.fastq -o Bin5_spades_output_v3
-#Note: failure at kmer counting step
-
-*****************
-#spades manual (including metaspades): http://cab.spbu.ru/files/release3.12.0/manual.html#meta
-#using metaspades
-metaspades.py  -1 Bin5_R1.cutadapt.fastq -2 Bin5_R2.cutadapt.fastq -o Bin5_metaspades_output_v1
-
-#install the annotation program packages
-conda create -n annotation prokka augustus
-#activation code
-conda activate annotation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # code book for augustus: http://augustus.gobics.de/binaries/README.TXT
 #example of use of augustus 
 augustus --UTR=on --species=fly D.ps.short.fasta > D.ps.gff
 
 
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Creating a query of known gene sequences from the peroxidase database
+
 #created .faa file of peroxidase sequences from fPoxDB
 #need to then convert the contigs from the spades output into the blastable db
 
 makeblastdb -in contigs.fasta -dbtype nucl -title Bin_5_db -out Bin5_db
+
 blastn -db Bin5_db -query Blastable_DB.faa -out Bin_5_blast.txt -outfmt 7
 
 makeblastdb -in contigs.fasta -dbtype nucl -title Bin_6_db -out Bin6_db
@@ -201,7 +224,7 @@ blastn -db Bin6_db -query Blastable_DB.faa -out Bin_6_blast.txt -outfmt 7
 #Looking at the .txt output file, there are no hits matching any of the sequence references 
 
 ~~~~~~~~~~~~~~~~~~~~~
-Bin 5
+#Bin 5 Annotation
 
 #running  augustus in an attempt to locate any peroxidase genes
 augustus --UTR=on --species=coprinus_cinereus contigs.fasta > Bin5.gff
@@ -234,6 +257,7 @@ getAnnoFasta.pl Bin6.gff
 makeblastdb -in Bin6.aa -dbtype prot -title Bin6_aa -out Bin6_metagenome_aa_db
 
 blastp -db Bin6_metagenome_aa_db -query Blastable_aa_query.txt -out Bin6_aa_blast_output.txt -outfmt 7
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##editting annotation blast output file to highlight the best hits (even though none of them were significant)
